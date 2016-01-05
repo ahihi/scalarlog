@@ -1,0 +1,5 @@
+<h1>
+  <span id="supertitle"><a href=@{HomeR}>quantities</a>/
+  <span id="title">#{tagName tag}
+
+<div id="content">

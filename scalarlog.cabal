@@ -27,6 +27,7 @@ library
                      , text == 1.2.*
                      , time == 1.5.*
                      , yesod == 1.4.*
+                     , yesod-static == 1.5.*
   default-language:    Haskell2010
 
 executable scalarlog-exe

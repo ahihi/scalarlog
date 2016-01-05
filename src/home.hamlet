@@ -1,5 +1,6 @@
-<h1>Tags
+<h1>
+  <span id="title">quantities
 
 <ul>
   $forall Entity tagId tag <- tags
-    <li>#{tagName tag}
+    <li><a href=@{TagR $ tagName tag}>#{tagName tag} (#{tagUnit tag})

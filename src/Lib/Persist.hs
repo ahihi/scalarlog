@@ -12,7 +12,7 @@ share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 Tag
   name Text
   unit Text
-  UniqueTagName name
+  TagNameU name
   deriving Show
 Scalar
   tagId TagId

@@ -1,0 +1,82 @@
+$(function() {
+  var scale = function(min0, max0, min1, max1, x) {
+    return (x - min0) / (max0 - min0) * (max1 - min1) + min1
+  };
+  var TAU = 2 * Math.PI;
+  
+  var data = [{
+    label: #{toJSON $ tagName tag} + " (" + #{toJSON $ tagUnit tag} + ")",
+    pointColor: "#CC0099",
+    data: $.map(#{toJSON scalarsJs}, function(e) {
+      return {
+        x: new Date(Date.parse(e[0])),
+        y: e[1]
+      };
+    })
+  }];
+  var options = {
+    scaleType: "date",
+    scaleDateFormat: "yyyy-mm-dd",
+    scaleTimeFormat: "HH:MM",
+    scaleDateTimeFormat: "yyyy-mm-dd HH:MM",
+    scaleLabel: function(x) {
+      return x.value + " " + #{toJSON $ tagUnit tag};
+    },
+    datasetStroke: false,
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: false
+  };
+  
+  var WIDTH = "auto";
+  var HEIGHT = "600px";
+  
+  var init_canvas = function() {
+    var canvas = $("<canvas>");
+    
+    var canvas_elem = canvas[0];
+    if(!canvas_elem.getContext) {
+      return;
+    }
+          
+    var content = $("#content");
+    content.empty();
+    
+    var style = window.getComputedStyle(content[0], null);    
+    var style_value = function(x) {
+      var str_value = style.getPropertyValue(x);
+      var value = parseFloat(str_value);
+      console.log(x + ": " + str_value + " -> " + value);
+      return value;
+    };
+    
+    var rect = content[0].getBoundingClientRect();
+    
+    var inner_width = content.innerWidth();
+    var width = inner_width;
+    canvas.attr("width", width);
+    //canvas.css("width", width);
+    
+    var inner_height = content.innerHeight();
+    var height = inner_height;
+    canvas.attr("height", height);
+    //canvas.css("height", height);
+    console.log("" + width + ", " + height);
+    
+    content.append(canvas);
+
+    var ctx = canvas_elem.getContext("2d");
+  
+    var chart = new Chart(ctx).Scatter(data, options);
+  }
+  
+  var resize_timer = null;
+  $(window).resize(function() {
+    if(resize_timer !== null) {
+      clearTimeout(resize_timer);
+    }
+    resize_timer = setTimeout(init_canvas, 100);
+  })
+  
+  init_canvas();
+});
