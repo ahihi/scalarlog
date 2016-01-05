@@ -8,13 +8,10 @@ packages:
 - '.'
 
 # Packages to be pulled from upstream that are not in the resolver (e.g., acme-missiles-0.3)
-extra-deps:
-- persistent-sqlite-2.2
+extra-deps: []
 
 # Override default flag values for local packages and extra-deps
-flags:
-  persistent-sqlite:
-    build-sanity-exe: true
+flags: {}
 
 # Control whether we use the GHC we find on the path
 # system-ghc: true
