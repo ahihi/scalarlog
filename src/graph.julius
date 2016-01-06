@@ -6,7 +6,7 @@ $(function() {
   
   var data = [{
     label: #{toJSON $ tagName tag} + " (" + #{toJSON $ tagUnit tag} + ")",
-    pointColor: "#CC0099",
+    pointColor: "rgb(204, 0, 153)",
     data: $.map(#{toJSON scalarsJs}, function(e) {
       return {
         x: new Date(Date.parse(e[0])),
@@ -22,7 +22,9 @@ $(function() {
     scaleLabel: function(x) {
       return x.value + " " + #{toJSON $ tagUnit tag};
     },
-    datasetStroke: false,
+    datasetStroke: true,
+    datasetStrokeWidth: 3,
+    datasetStrokeColor: "rgba(204, 0, 153, 0.1)",
     responsive: true,
     maintainAspectRatio: false,
     animation: false
