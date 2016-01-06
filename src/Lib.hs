@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, QuasiQuotes, TemplateHaskell, TypeFamilies, ViewPatterns #-}
+{-# LANGUAGE MultiParamTypeClasses, OverloadedStrings, QuasiQuotes, TemplateHaskell, TypeFamilies, ViewPatterns #-}
 module Lib
     ( appMain
     ) where
@@ -8,10 +8,12 @@ import Control.Monad.Trans.Resource (runResourceT)
 import Data.Foldable
 import Database.Persist.Sql
 import Database.Persist.Sqlite
-import Data.Text (Text)
+import Data.Text (Text, pack, unpack)
 import Data.Time.Clock
+import Data.Time.Format
+import System.Environment
 import Text.Hamlet
-import Yesod
+import Yesod hiding (parseTime)
 import Yesod.Static
 
 import Lib.Persist
@@ -20,18 +22,22 @@ import Lib.Template
 data ScalarLog = ScalarLog
   { getPool :: ConnectionPool
   , getStatic :: Static
+  , getApiKey :: Text
   }
 
 staticFiles "static"
 
 mkYesod "ScalarLog" [parseRoutes|
-/         HomeR GET
-/#Text    TagR  GET
-!/_static StaticR Static getStatic
+  /         HomeR GET
+  /#Text    TagR  GET POST
+  !/_static StaticR Static getStatic
 |]
 
 instance Yesod ScalarLog where
   jsLoader _ = BottomOfHeadBlocking 
+
+instance RenderMessage ScalarLog FormMessage where
+  renderMessage _ _ = defaultFormMessage
 
 instance YesodPersist ScalarLog where
   type YesodPersistBackend ScalarLog = SqlBackend
@@ -63,16 +69,43 @@ getTagR name = do
     toWidget $(juliusTemplate "graph") 
     toWidget $(hamletTemplate "tag")
 
+postTagR :: Text -> Handler ()
+postTagR name = do
+  correctApiKey <- getApiKey <$> getYesod
+  Entity tagId tag <- runDB $ getBy404 $ TagNameU name
+  (apiKey, timeStr, value) <- runInputPost $
+    (,,)
+      <$> ireq textField "apiKey"
+      <*> ireq textField "time"
+      <*> ireq doubleField "value"
+      
+  if apiKey /= correctApiKey
+    then invalidArgs ["invalid api key"]
+    else case parseUTCTime timeStr of
+      Nothing -> invalidArgs ["invalid time value"]
+      Just time -> do
+        runDB $ insert $ Scalar tagId time value
+        return ()
+  where
+    parseUTCTime :: Text -> Maybe UTCTime
+    parseUTCTime = parseTimeM False defaultTimeLocale "%Y-%m-%dT%H:%M:%S%z" . unpack
+
 appMain :: IO ()
 appMain = do
   let openConnectionCount = 10
+  
+  dbFile <- pack <$> getEnv "SCALARLOG_DB_FILE"
+  apiKey <- pack <$> getEnv "SCALARLOG_API_KEY"
+  
   runStderrLoggingT $
-    withSqlitePool "test.sqlite" openConnectionCount $
+    withSqlitePool dbFile openConnectionCount $
       \pool -> liftIO $ do
         getStatic <- static "static"
-        let site = ScalarLog { getPool = pool
-          , getStatic = getStatic
-          }
+        let site = ScalarLog {
+          getPool = pool,
+          getStatic = getStatic,
+          getApiKey = apiKey
+        }
         
         runResourceT $ flip runSqlPool pool $ do
           runMigration migrateAll
