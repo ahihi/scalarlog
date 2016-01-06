@@ -46,7 +46,6 @@ $(function() {
     var style_value = function(x) {
       var str_value = style.getPropertyValue(x);
       var value = parseFloat(str_value);
-      console.log(x + ": " + str_value + " -> " + value);
       return value;
     };
     
@@ -59,7 +58,6 @@ $(function() {
     var inner_height = content.innerHeight();
     var height = inner_height;
     canvas.attr("height", height);
-    console.log("" + width + ", " + height);
     
     content.append(canvas);
 

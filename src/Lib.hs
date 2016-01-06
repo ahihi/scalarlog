@@ -5,14 +5,13 @@ module Lib
 
 import Control.Monad.Logger (runStderrLoggingT)
 import Control.Monad.Trans.Resource (runResourceT)
-import Data.Foldable
 import Database.Persist.Sql
 import Database.Persist.Sqlite
-import Data.Text (Text, pack, unpack)
+import Data.Text (Text)
+import qualified Data.Text as Text
 import Data.Time.Clock
 import Data.Time.Format
 import System.Environment
-import Text.Hamlet
 import Yesod hiding (parseTime)
 import Yesod.Static
 
@@ -87,14 +86,14 @@ postTagR name = do
         return ()
   where
     parseUTCTime :: Text -> Maybe UTCTime
-    parseUTCTime = parseTimeM False defaultTimeLocale "%Y-%m-%dT%H:%M:%S%z" . unpack
+    parseUTCTime = parseTimeM False defaultTimeLocale "%Y-%m-%dT%H:%M:%S%z" . Text.unpack
 
 appMain :: IO ()
 appMain = do
   let openConnectionCount = 10
   
-  dbFile <- pack <$> getEnv "SCALARLOG_DB_FILE"
-  apiKey <- pack <$> getEnv "SCALARLOG_API_KEY"
+  dbFile <- Text.pack <$> getEnv "SCALARLOG_DB_FILE"
+  apiKey <- Text.pack <$> getEnv "SCALARLOG_API_KEY"
   
   runStderrLoggingT $
     withSqlitePool dbFile openConnectionCount $
