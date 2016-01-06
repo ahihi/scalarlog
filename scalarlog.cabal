@@ -1,13 +1,13 @@
 name:                scalarlog
 version:             0.1.0.0
-synopsis:            Initial project template from stack
-description:         Please see README.md
-homepage:            http://localhost
-license:             BSD3
+synopsis:            Data collection & scatterplot web app
+description:         Data collection & scatterplot web app
+homepage:            https://github.com/ahihi/scalarlog
+license:             OtherLicense
 license-file:        LICENSE
-author:              Author name here
-maintainer:          example@example.com
-copyright:           2010 Author Here
+author:              Miranda Kastemaa
+maintainer:          miranda@foldplop.com
+copyright:           CC0
 category:            Web
 build-type:          Simple
 -- extra-source-files:
@@ -49,4 +49,4 @@ test-suite scalarlog-test
 
 source-repository head
   type:     git
-  location: https://localhost
+  location: https://github.com/ahihi/scalarlog
