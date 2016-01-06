@@ -1,5 +1,8 @@
 <h1>
   <span id="supertitle"><a href=@{HomeR}>quantities</a>/
-  <span id="title">#{tagName tag}
+  <span id="title">
+    #{tagName tag}
+    <span id="json"><a href=@{TagJsonR $ tagName tag}>.json
 
 <div id="content">
+  <p>Enable JavaScript to view scatter plot

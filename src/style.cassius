@@ -13,22 +13,26 @@ h1, ul, canvas
 h1
   padding: 0.5em
   background-color: #666
-  font-size: 8pt
+  font-size: 10pt
   
   color: #AAA
 
   #supertitle, #title
     display: block
   
-  #supertitle
-    font-size: 10pt
-  
+  #supertitle, #json
     a
       color: #CCC
+  
+  #supertitle
+    font-size: 10pt
     
   #title
     color: #FFF
-    font-size: 16pt
+    font-size: 18pt
+
+  #json
+    font-size: 10pt
 
 ul, #content
   margin: 0.5em

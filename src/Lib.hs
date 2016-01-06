@@ -5,12 +5,13 @@ module Lib
 
 import Control.Monad.Logger (runStderrLoggingT)
 import Control.Monad.Trans.Resource (runResourceT)
-import Database.Persist.Sql
-import Database.Persist.Sqlite
+import Data.Aeson
 import Data.Text (Text)
 import qualified Data.Text as Text
 import Data.Time.Clock
 import Data.Time.Format
+import Database.Persist.Sql
+import Database.Persist.Sqlite
 import System.Environment
 import Yesod hiding (parseTime)
 import Yesod.Static
@@ -27,9 +28,10 @@ data ScalarLog = ScalarLog
 staticFiles "static"
 
 mkYesod "ScalarLog" [parseRoutes|
-  /         HomeR GET
-  /#Text    TagR  GET POST
-  !/_static StaticR Static getStatic
+  /           HomeR     GET
+  /#Text      TagR      GET POST
+  /#Text/json TagJsonR  GET
+  !/_static   StaticR Static getStatic
 |]
 
 instance Yesod ScalarLog where
@@ -58,17 +60,36 @@ getHomeR = do
   layout $ do
     toWidget $(hamletTemplate "home")
 
-getTagR :: Text -> Handler Html
-getTagR name = do
+-- withScalars :: (Tag -> [Entity Tag] -> Handler a) -> Text -> Handler a
+withScalars w name = do
   Entity tagId tag <- runDB $ getBy404 $ TagNameU name
-  scalars <- runDB $ selectList [ScalarTagId ==. tagId] [Asc ScalarTime]
-  let scalarsJs = map (\(Entity _ s) -> (scalarTime s, scalarValue s)) scalars
+  w tag =<< runDB (selectList [ScalarTagId ==. tagId] [Asc ScalarTime])
+
+getTagR :: Text -> Handler Html
+getTagR = withScalars $ \tag scalars -> do
+  let scalarsJs = map (\(Entity _ s) -> (scalarTime s, scalarValue s)) (scalars :: [Entity Scalar])
   layout $ do
     addScript $ StaticR jquery_js
     addScript $ StaticR chart_core_js
     addScript $ StaticR chart_scatter_js
     toWidget $(juliusTemplate "graph") 
-    toWidget $(hamletTemplate "tag")
+    toWidget $(hamletTemplate "tag")    
+
+getTagJsonR :: Text -> Handler Value
+getTagJsonR = withScalars $ \tag scalars -> 
+    return $ object
+       [ "tag" .= tagName tag
+       , "unit" .= tagUnit tag
+       , "data" .=
+         [
+           object 
+             [ "time" .= scalarTime s
+             , "value" .= scalarValue s
+             ]
+         |
+           Entity _ s <- scalars
+         ]
+       ]
 
 postTagR :: Text -> Handler ()
 postTagR name = do

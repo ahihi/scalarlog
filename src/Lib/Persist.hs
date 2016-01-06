@@ -2,11 +2,11 @@
 
 module Lib.Persist where
 
+import Data.Text
+import Data.Time
 import Database.Persist
 import Database.Persist.Sqlite
 import Database.Persist.TH
-import Data.Text
-import Data.Time
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
   Tag
