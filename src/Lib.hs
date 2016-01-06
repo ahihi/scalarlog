@@ -46,6 +46,9 @@ instance YesodPersist ScalarLog where
 layout :: Widget -> Handler Html
 layout w = defaultLayout $ do
   addStylesheet $ StaticR reset_css
+  toWidgetHead [hamlet|
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  |]
   toWidget $(cassiusTemplate "style")
   w
 
