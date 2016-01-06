@@ -55,7 +55,6 @@ getHomeR = do
   tags <- runDB $ selectList [] [Asc TagName]
   layout $ do
     toWidget $(hamletTemplate "home")
-  -- toWidget [lucius| .#{contactClass} { color: #F0F; } |]
 
 getTagR :: Text -> Handler Html
 getTagR name = do
@@ -112,19 +111,3 @@ appMain = do
           insertExampleData
           
         warp 3000 site
-  where    
-    insertExampleData = do
-      -- insert $ Tag "temperature" "°C"
-      -- insert $ Tag "monnos" "°3°"
-    
-      {-
-      let increment (time, x) = (fromRational 3600 `addUTCTime` time, x + 1)
-      let temperatureData = take 20 $ iterate increment (read "2016-01-01 00:00:00", 0)
-      mapM_ (insertScalar "temperature") temperatureData
-      -}
-      return ()
-      where
-        insertScalar tagName (time, x) = do
-          let scalarWithEntity e = Scalar (entityKey e)
-          entityMay <- getBy $ TagNameU tagName
-          mapM_ (\e -> insert $ scalarWithEntity e time x) entityMay

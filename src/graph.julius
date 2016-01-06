@@ -55,12 +55,10 @@ $(function() {
     var inner_width = content.innerWidth();
     var width = inner_width;
     canvas.attr("width", width);
-    //canvas.css("width", width);
     
     var inner_height = content.innerHeight();
     var height = inner_height;
     canvas.attr("height", height);
-    //canvas.css("height", height);
     console.log("" + width + ", " + height);
     
     content.append(canvas);

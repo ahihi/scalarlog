@@ -9,14 +9,15 @@ import Data.Text
 import Data.Time
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
-Tag
-  name Text
-  unit Text
-  TagNameU name
-  deriving Show
-Scalar
-  tagId TagId
-  time UTCTime
-  value Double
-  deriving Show
+  Tag
+    name Text
+    unit Text
+    TagNameU name
+    deriving Show
+    
+  Scalar
+    tagId TagId
+    time UTCTime
+    value Double
+    deriving Show
 |]
