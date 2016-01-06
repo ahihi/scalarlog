@@ -108,6 +108,5 @@ appMain = do
         
         runResourceT $ flip runSqlPool pool $ do
           runMigration migrateAll
-          insertExampleData
           
         warp 3000 site
