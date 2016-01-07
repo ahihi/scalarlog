@@ -72,7 +72,8 @@ getTagR = withScalars $ \tag scalars -> do
     addScript $ StaticR jquery_js
     addScript $ StaticR chart_core_js
     addScript $ StaticR chart_scatter_js
-    toWidget $(juliusTemplate "graph") 
+    addScript $ StaticR graph_js
+    toWidget $(juliusTemplate "tag_graph") 
     toWidget $(hamletTemplate "tag")    
 
 getTagJsonR :: Text -> Handler Value
