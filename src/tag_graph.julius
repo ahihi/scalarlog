@@ -1,12 +1,4 @@
 $(function() {
-  init_graph(
-    #{toJSON $ tagName tag},
-    #{toJSON $ tagUnit tag},
-    $.map(#{toJSON scalarsJs}, function(e) {
-      return {
-        x: new Date(Date.parse(e[0])),
-        y: e[1]
-      };
-    })
-  );
+  var json_url = "@{TagJsonR $ tagName tag}";
+  init_graph(json_url);
 });
