@@ -14,6 +14,7 @@ import Database.Persist.Sql
 import Database.Persist.Sqlite
 import System.Environment
 import Yesod hiding (parseTime)
+import Yesod.Default.Handlers (getRobotsR)
 import Yesod.Static
 
 import Lib.Persist
@@ -28,10 +29,11 @@ data ScalarLog = ScalarLog
 staticFiles "static"
 
 mkYesod "ScalarLog" [parseRoutes|
-  /           HomeR     GET
-  /#Text      TagR      GET POST
-  /#Text/json TagJsonR  GET
-  !/_static   StaticR Static getStatic
+  /             HomeR     GET
+  /_static      StaticR Static getStatic
+  /robots.txt   RobotsR   GET
+  !/#Text       TagR      GET POST
+  !/#Text/json  TagJsonR  GET
 |]
 
 instance Yesod ScalarLog where
