@@ -7,7 +7,7 @@ a
 a:hover
   text-decoration: underline
 
-h1, ul, canvas
+h1, ul, canvas, noscript
   font-family: "Helvetica", sans-serif
 
 h1
